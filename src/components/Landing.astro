@@ -1,0 +1,290 @@
+<section id="landing">
+	<canvas id="gl-canvas"></canvas>
+	<div class="hero contrast-100 brightness-100 drop-shadow-lg hue-rotate-0 invert-0 sepia-0 saturate-100 grayscale-0">
+		<h1 class="alias zh">拜瑞</h1>
+		<h2 class="alias en">Burial0268</h2>
+		<p class="tagline">Front-End Developer &amp; Motion Enthusiast</p>
+	</div>
+	<button class="scroll-down" aria-label="scroll">
+		<span></span>
+	</button>
+	<!-- Diagonal banners -->
+	<div class="banner top" aria-hidden="true">
+		<div class="track">
+			<span>BURIAL0268&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
+			<span>BURIAL0268&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
+			<span>BURIAL0268&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
+			<span>BURIAL0268&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
+			<span>BURIAL0268&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
+			<span>BURIAL0268&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
+			<span>BURIAL0268&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
+			<span>BURIAL0268&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
+		</div>
+	</div>
+	<div class="banner bottom" aria-hidden="true">
+		<div class="track">
+			<span>BAIZHISUORUI&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
+			<span>BAIZHISUORUI&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
+			<span>BAIZHISUORUI&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
+			<span>BAIZHISUORUI&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
+			<span>BAIZHISUORUI&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
+			<span>BAIZHISUORUI&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
+			<span>BAIZHISUORUI&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
+			<span>BAIZHISUORUI&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
+			<span>BAIZHISUORUI&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
+		</div>
+	</div>
+</section>
+
+<script>
+	// @ts-nocheck
+	import { gsap } from 'gsap';
+	import { animate } from 'motion';
+	import * as THREE from 'three';
+	import { horizontalLoop } from '../utils/helper';
+
+	window.addEventListener('DOMContentLoaded', () => {
+		const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+		tl.from('.alias.zh', { y: 80, opacity: 0, duration: 1 })
+			.from('.alias.en', { y: 80, opacity: 0, duration: 1 }, '-=0.8')
+			.from('.tagline', { y: 60, opacity: 0, duration: 1 }, '-=0.6');
+
+		// Motion one scroll indicator animation
+		// @ts-ignore – Motion typings don't cover this overload but runtime works
+		(animate as any)(
+			'.scroll-down span',
+			{ y: [0, 10], opacity: [1, 0] },
+			{ duration: 1.4, repeat: Infinity, easing: 'ease-in-out', direction: 'alternate' }
+		);
+
+		// Delay the loop setup to ensure all rendering is complete
+		gsap.delayedCall(0.1, () => {
+			horizontalLoop(gsap.utils.toArray('.banner.top .track span'), {
+				repeat: -1,
+				speed: 0.6,
+				reversed: false,
+				paddingRight: parseFloat(getComputedStyle(document.querySelector('.banner.top .track span')).marginRight) || 0
+			});
+
+			horizontalLoop(gsap.utils.toArray('.banner.bottom .track span'), {
+				repeat: -1,
+				speed: 0.6,
+				reversed: true,
+				paddingRight: parseFloat(getComputedStyle(document.querySelector('.banner.bottom .track span')).marginRight) || 0
+			});
+		});
+
+		// Three.js background
+		const canvas = document.getElementById('gl-canvas');
+		if (canvas) {
+			const scene = new THREE.Scene();
+			const camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+			const renderer = new THREE.WebGLRenderer({ canvas: canvas });
+			renderer.setSize(window.innerWidth, window.innerHeight);
+
+			const vertexShader = `
+				void main() {
+					gl_Position = vec4(position, 1.0);
+				}
+			`;
+
+			const fragmentShader = `
+				uniform vec2 u_resolution;
+				uniform float u_time;
+
+				// 2D Random
+				float random (in vec2 st) {
+						return fract(sin(dot(st.xy,
+																 vec2(12.9898,78.233)))
+												 * 43758.5453123);
+				}
+
+				// 2D Noise based on Morgan McGuire @morgan3d
+				// https://www.shadertoy.com/view/4dS3Wd
+				float noise (in vec2 st) {
+						vec2 i = floor(st);
+						vec2 f = fract(st);
+
+						// Four corners in 2D of a tile
+						float a = random(i);
+						float b = random(i + vec2(1.0, 0.0));
+						float c = random(i + vec2(0.0, 1.0));
+						float d = random(i + vec2(1.0, 1.0));
+
+						vec2 u = f * f * (3.0 - 2.0 * f);
+						return mix(a, b, u.x) +
+										(c - a)* u.y * (1.0 - u.x) +
+										(d - b) * u.x * u.y;
+				}
+
+				void main() {
+					vec2 st = gl_FragCoord.xy/u_resolution.xy;
+					st.x *= u_resolution.x/u_resolution.y;
+
+					float n = noise(st * 3.0 + u_time * 0.1);
+
+					vec3 color1 = vec3(0.0, 0.015, 0.156); // #000428
+					vec3 color2 = vec3(0.235, 0.231, 0.572); // #3c3b92
+
+					vec3 color = mix(color1, color2, smoothstep(0.3, 0.7, n));
+
+					// Add dithering to reduce color banding
+					color += (random(gl_FragCoord.xy) - 0.5) / 255.0;
+
+					gl_FragColor = vec4(color,1.0);
+				}
+			`;
+
+			const uniforms = {
+				u_time: { value: 0.0 },
+				u_resolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+			};
+
+			const geometry = new THREE.PlaneGeometry(2, 2);
+			const material = new THREE.ShaderMaterial({
+				vertexShader,
+				fragmentShader,
+				uniforms
+			});
+			const plane = new THREE.Mesh(geometry, material);
+			scene.add(plane);
+
+			const clock = new THREE.Clock();
+
+			function animate() {
+				requestAnimationFrame(animate);
+				uniforms.u_time.value = clock.getElapsedTime();
+				renderer.render(scene, camera);
+			}
+
+			animate();
+
+			window.addEventListener('resize', () => {
+				renderer.setSize(window.innerWidth, window.innerHeight);
+				uniforms.u_resolution.value.set(window.innerWidth, window.innerHeight);
+			});
+		}
+	});
+</script>
+
+<style>
+	:root {
+		--bg-gradient: radial-gradient(circle at 20% 10%, #3c3b92 0%, #000428 100%);
+		--accent-gradient: linear-gradient(135deg, #00c6ff 0%, #0072ff 100%);
+	}
+
+	#gl-canvas {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 0;
+	}
+
+	#landing {
+		min-height: 100vh;
+		width: 100%;
+		display: grid;
+		place-items: center;
+		/* background: var(--bg-gradient); */
+		color: #fff;
+		position: relative;
+		overflow: hidden;
+	}
+
+	.hero {
+		text-align: center;
+		position: relative;
+		z-index: 2;
+	}
+
+	.alias.zh {
+		font-size: clamp(3rem, 10vw, 6rem);
+		margin: 0;
+		line-height: 1;
+		background: var(--accent-gradient);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+	}
+
+	.alias.en {
+		font-size: clamp(1.5rem, 5vw, 3rem);
+		margin: 0.5rem 0 0;
+	}
+
+	.tagline {
+		margin-top: 1rem;
+		font-size: 1.125rem;
+		letter-spacing: 0.05em;
+		opacity: 0.85;
+	}
+
+	.scroll-down {
+		position: absolute;
+		bottom: 2rem;
+		left: 50%;
+		transform: translateX(-50%);
+		background: transparent;
+		border: 2px solid #fff;
+		border-radius: 50px;
+		width: 36px;
+		height: 56px;
+		padding: 0;
+		display: flex;
+		justify-content: center;
+		align-items: flex-start;
+		cursor: pointer;
+		opacity: 0.7;
+		z-index: 2;
+	}
+
+	.scroll-down:hover {
+		opacity: 1;
+	}
+
+	.scroll-down span {
+		display: block;
+		width: 4px;
+		height: 8px;
+		background: #fff;
+		border-radius: 2px;
+		margin-top: 10px;
+	}
+
+	/* Diagonal banner styles */
+	.banner {
+		position: fixed;
+		left: -20vw; /* extend beyond viewport for rotation */
+		width: 140vw;
+		height: 60px;
+		overflow: hidden;
+		pointer-events: none;
+		display: flex;
+		align-items: flex-start;
+	}
+
+	.banner.top {
+		top: 8vh;
+		transform: rotate(-12deg);
+	}
+
+	.banner.bottom {
+		bottom: 8vh;
+		transform: rotate(-12deg);
+	}
+
+	.banner .track {
+		display: flex;
+		flex-shrink: 0;
+		align-self: flex-start;
+	}
+
+	.banner span {
+		font-size: 1.2rem;
+		letter-spacing: 0.2em;
+		color: rgba(255, 255, 255, 0.25);
+		text-transform: uppercase;
+		margin-right: 20px; /* Add some spacing between items */
+	}
+</style>
