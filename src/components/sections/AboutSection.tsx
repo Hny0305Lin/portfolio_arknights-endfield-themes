@@ -50,7 +50,7 @@ export default function AboutSection({ isReady = false }: AboutSectionProps) {
       tagLine="▼ / BURIAL0268"
       badgeText="ABOUT"
       heading="关于我"
-      metaLine="// SUPER::PORTOFOLIO::ABOUT::GET()"
+      metaLine="// SUPER::PORTFOLIO::ABOUT::GET()"
       isReady={isReady}
     >
       {/* Two-column asymmetric layout */}

@@ -54,7 +54,7 @@ export default function ProjectsSection({ projects, isReady = false }: ProjectsS
       tagLine="▼ / BURIAL0268"
       badgeText="PROJECTS"
       heading="精选项目"
-      metaLine="// SUPER::PORTOFOLIO::WORKS::GET()"
+      metaLine="// SUPER::PORTFOLIO::WORKS::GET()"
       isReady={isReady}
     >
       {/* Featured + compact list layout */}

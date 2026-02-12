@@ -197,7 +197,7 @@ export default function HeroSection({ isReady = true }: HeroSectionProps) {
           transition={{ duration: 0.5, delay: 0.4, ease: [0.22, 1, 0.36, 1] }}
         >
           <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] text-white/40 font-mono">
-            // SUPER::PORTOFOLIO::CORE::init()
+            // SUPER::PORTFOLIO::CORE::init()
           </span>
           <div className="text-right font-mono text-[10px] text-[#6CE5E8]/60 leading-relaxed hidden md:block">
             <div>{"> STACK: REACT / MOTION / VUE"}</div>
@@ -277,7 +277,7 @@ export default function HeroSection({ isReady = true }: HeroSectionProps) {
           transition={{ duration: 0.6, delay: 1.2, ease: [0.22, 1, 0.36, 1] }}
         >
           <div className="font-mono text-[10px] text-white/30 leading-relaxed">
-            <p>[ PORTOFOLIO {(new Date()).getFullYear()} ]</p>
+            <p>[ PORTFOLIO {(new Date()).getFullYear()} ]</p>
             <p className='text-display'>// &copy; BAESORY a.k.a BURIAL0268 & 拜瑞</p>
           </div>
 

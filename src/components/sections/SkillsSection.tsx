@@ -53,7 +53,7 @@ export default function SkillsSection({ isReady = false }: SkillsSectionProps) {
       tagLine="▼ / BURIAL0268"
       badgeText="SKILLS"
       heading="技能专长"
-      metaLine="// SUPER::PORTOFOLIO::SKILLS::GET()"
+      metaLine="// SUPER::PORTFOLIO::SKILLS::GET()"
       isReady={isReady}
     >
       {/* Category rows */}

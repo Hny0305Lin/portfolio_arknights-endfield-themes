@@ -15,14 +15,14 @@ interface Photo {
 const PHOTO_CDN_PERFIX = 'https://webstatic.gbclstudio.cn'
 
 const photos: Photo[] = [
-  { src: '/portofolio/pic01.jpg', title: '染秋', subtitle: '广东 · 2025', tag: '自然' },
-  { src: '/portofolio/pic02.jpg', title: '叶罅', subtitle: '广东 · 2024', tag: '自然' },
-  { src: '/portofolio/pic03.jpg', title: '新洁', subtitle: '广东 · 2024', tag: '自然' },
-  { src: '/portofolio/pic04.jpg', title: '远望', subtitle: '广东 · 2024', tag: '人文' },
-  { src: '/portofolio/pic05.jpg', title: '云岫', subtitle: '广东 · 2025', tag: '自然' },
-  { src: '/portofolio/pic06.jpg', title: '燃犀', subtitle: '广东 · 2025', tag: '自然' },
-  { src: '/portofolio/pic07.jpg', title: '叠城', subtitle: '上海 · 2023', tag: '街拍' },
-  { src: '/portofolio/pic08.jpg', title: '伫听', subtitle: '上海 · 2023', tag: '自然' },
+  { src: '/portfolio/pic01.jpg', title: '染秋', subtitle: '广东 · 2025', tag: '自然' },
+  { src: '/portfolio/pic02.jpg', title: '叶罅', subtitle: '广东 · 2024', tag: '自然' },
+  { src: '/portfolio/pic03.jpg', title: '新洁', subtitle: '广东 · 2024', tag: '自然' },
+  { src: '/portfolio/pic04.jpg', title: '远望', subtitle: '广东 · 2024', tag: '人文' },
+  { src: '/portfolio/pic05.jpg', title: '云岫', subtitle: '广东 · 2025', tag: '自然' },
+  { src: '/portfolio/pic06.jpg', title: '燃犀', subtitle: '广东 · 2025', tag: '自然' },
+  { src: '/portfolio/pic07.jpg', title: '叠城', subtitle: '上海 · 2023', tag: '街拍' },
+  { src: '/portfolio/pic08.jpg', title: '伫听', subtitle: '上海 · 2023', tag: '自然' },
 ];
 
 export default function GallerySection({ isReady = false }: GallerySectionProps) {

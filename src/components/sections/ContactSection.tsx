@@ -27,7 +27,7 @@ export default function ContactSection({ isReady = false }: ContactSectionProps)
       tagLine="▼ / BURIAL0268"
       badgeText="CONTACT"
       heading="联系我"
-      metaLine="// SUPER::PORTOFOLIO::CONTACT::GET()"
+      metaLine="// SUPER::PORTFOLIO::CONTACT::GET()"
       isReady={isReady}
     >
       {/* Two-column layout */}
