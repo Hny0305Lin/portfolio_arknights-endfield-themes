@@ -10,6 +10,18 @@ export default defineConfig({
     plugins: [tailwindcss()],
     server: {
       allowedHosts: ['bzsr-devenvlaptop02.taila30f9f.ts.net']
+    },
+    ssr: {
+      noExternal: ['motion', '@applemusic-like-lyrics/react', '@applemusic-like-lyrics/core']
+    },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            'motion': ['motion']
+          }
+        }
+      }
     }
   },
 

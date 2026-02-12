@@ -1,0 +1,459 @@
+import { useState, useCallback, useRef, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import Navigation from './Navigation';
+import { useBGM } from '@/hooks/useBGM';
+import HeroSection from './sections/HeroSection';
+import AboutSection from './sections/AboutSection';
+import ProjectsSection from './sections/ProjectsSection';
+import SkillsSection from './sections/SkillsSection';
+import GallerySection from './sections/GallerySection';
+import Cursor from './effects/Cursor';
+
+interface Project {
+  slug: string;
+  title: string;
+  description: string;
+  tags: string[];
+  link?: string;
+  github?: string;
+  featured: boolean;
+  order: number;
+}
+
+interface AppProps {
+  projects: Project[];
+}
+
+const SECTIONS = [
+  { id: 'home', watermark: '', bg: '#0A0A0A', isDark: true },
+  { id: 'about', watermark: 'ABOUT', bg: '#FAFAFA', isDark: false },
+  { id: 'projects', watermark: 'WORKS', bg: '#0A0A0A', isDark: true },
+  { id: 'skills', watermark: 'SKILLS', bg: '#FFFFFF', isDark: false },
+  { id: 'gallery', watermark: 'GALLERY', bg: '#0A0A0A', isDark: true },
+] as const;
+
+const delay = (ms: number) => new Promise<void>(r => setTimeout(r, ms));
+
+/* ── Section Dots — MD3 expressive stretch ─────────────────────── */
+function SectionDots({ current, total }: { current: number; total: number }) {
+  const DOT = 4, GAP = 12, STEP = DOT + GAP;
+  const IH = 20; // indicator height at rest
+  const PAD = (IH - DOT) / 2; // vertical padding so indicator doesn't clip
+  const containerH = total * DOT + (total - 1) * GAP + 2 * PAD;
+
+  const prevRef = useRef(current);
+  const dir = current - prevRef.current;
+  useEffect(() => { prevRef.current = current; }, [current]);
+
+  const topTarget = current * STEP;
+  const bottomTarget = containerH - topTarget - IH;
+
+  // Leading edge arrives first, trailing edge follows — creates the stretch
+  const lead = { type: 'spring' as const, stiffness: 300, damping: 25 };
+  const trail = { type: 'spring' as const, stiffness: 300, damping: 35, mass: 2 };
+
+  return (
+    <div className="fixed right-6 xl:right-10 top-1/2 -translate-y-1/2 z-40 hidden lg:block">
+      <div className="relative" style={{ width: 6, height: containerH }}>
+        {/* Static background dots */}
+        {Array.from({ length: total }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute left-1/2 -translate-x-1/2"
+            style={{
+              width: DOT,
+              height: DOT,
+              top: PAD + i * STEP,
+              backgroundColor: 'rgba(255,255,255,0.15)',
+            }}
+          />
+        ))}
+        {/* Active indicator — edges spring independently */}
+        <motion.div
+          className="absolute inset-x-0 bg-[#6CE5E8]"
+          initial={false}
+          animate={{ top: topTarget, bottom: bottomTarget }}
+          transition={{
+            top: dir > 0 ? trail : lead,
+            bottom: dir < 0 ? trail : lead,
+          }}
+        />
+      </div>
+    </div>
+  );
+}
+
+/* ── Progress Bar ────────────────────────────────────────────────── */
+function SectionProgress({ current, total }: { current: number; total: number }) {
+  const progress = ((current + 1) / total) * 100;
+  return (
+    <div className="fixed top-0 left-0 right-0 z-55 h-0.5 bg-transparent">
+      <motion.div
+        className="h-full bg-[#6CE5E8]"
+        animate={{ width: `${progress}%` }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+      />
+    </div>
+  );
+}
+
+/* ── Main App ────────────────────────────────────────────────────── */
+export default function App({ projects }: AppProps) {
+  const { playing: bgmPlaying, toggle: toggleBGM, analyserRef: bgmAnalyserRef } = useBGM();
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [transitioning, setTransitioning] = useState(false);
+  const [contentReady, setContentReady] = useState(false);
+  const [sectionVisible, setSectionVisible] = useState(true);
+
+  // Shared watermark state
+  const [watermarkText, setWatermarkText] = useState('');
+  const [watermarkProminent, setWatermarkProminent] = useState(false);
+  const [cursorVisible, setCursorVisible] = useState(false);
+
+  // Shared background state
+  const [bgColor, setBgColor] = useState<string>(SECTIONS[0].bg);
+  const [bgIsDark, setBgIsDark] = useState<boolean>(SECTIONS[0].isDark);
+
+  const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const wheelAccum = useRef(0);
+  const lastWheelTime = useRef(0);
+
+  // Refs for live values — avoids stale closures in event handlers
+  const activeIndexRef = useRef(0);
+  const lockedRef = useRef(false); // true during transition + cooldown
+
+  // Keep ref in sync with state
+  useEffect(() => { activeIndexRef.current = activeIndex; }, [activeIndex]);
+
+  // Dismiss loader after progress completes, then trigger entrance animations
+  useEffect(() => {
+    let cancelled = false;
+
+    function tryDismiss() {
+      if (cancelled) return;
+      if (!(window as any).__loaderDone) {
+        requestAnimationFrame(tryDismiss);
+        return;
+      }
+      // Progress hit 100% — hold a beat, then start exit
+      setTimeout(() => {
+        if (cancelled) return;
+        const el = document.getElementById('loader');
+        if (el) {
+          el.classList.add('loader-exit');
+          el.addEventListener('transitionend', () => {
+            el.remove();
+            setContentReady(true);
+          }, { once: true });
+        } else {
+          setContentReady(true);
+        }
+      }, 300);
+    }
+
+    requestAnimationFrame(tryDismiss);
+    return () => { cancelled = true; };
+  }, []);
+
+  /* ── Navigate ────────────────────────────────────────────────── */
+  const navigateToSection = useCallback(async (targetIndex: number) => {
+    if (lockedRef.current) return;
+    if (targetIndex === activeIndexRef.current || targetIndex < 0 || targetIndex >= SECTIONS.length) return;
+
+    const currentIndex = activeIndexRef.current;
+    const fromWatermark = SECTIONS[currentIndex].watermark;
+    const toWatermark = SECTIONS[targetIndex].watermark;
+
+    lockedRef.current = true;
+    setTransitioning(true);
+    wheelAccum.current = 0;
+
+    // Phase 1: Fade out section content
+    setContentReady(false);
+    setSectionVisible(false);
+    await delay(400);
+
+    // Phase 2: Watermark becomes prominent
+    setWatermarkProminent(true);
+    setCursorVisible(true);
+    await delay(200);
+
+    // Phase 3: Delete old watermark char by char
+    if (fromWatermark) {
+      for (let i = fromWatermark.length; i >= 0; i--) {
+        setWatermarkText(fromWatermark.slice(0, i));
+        await delay(35);
+      }
+    }
+
+    // If nothing to type next, dismiss cursor before bg transition
+    if (!toWatermark) {
+      setCursorVisible(false);
+      setWatermarkProminent(false);
+    }
+
+    // Phase 4: Background color + text color transition
+    setBgColor(SECTIONS[targetIndex].bg);
+    setBgIsDark(SECTIONS[targetIndex].isDark);
+    await delay(400);
+
+    // Phase 5: Type new watermark char by char + settle
+    if (toWatermark) {
+      for (let i = 0; i <= toWatermark.length; i++) {
+        setWatermarkText(toWatermark.slice(0, i));
+        await delay(55);
+      }
+
+      // Phase 6: Settle — watermark returns to subtle
+      await delay(300);
+      setCursorVisible(false);
+      setWatermarkProminent(false);
+      await delay(200);
+    }
+
+    // Phase 7: Switch section + reveal
+    activeIndexRef.current = targetIndex;
+    setActiveIndex(targetIndex);
+    const wrapper = sectionRefs.current[targetIndex];
+    if (wrapper) wrapper.scrollTop = 0;
+    await delay(50);
+
+    setSectionVisible(true);
+    await delay(350);
+
+    // Phase 8: Content entrance animations
+    setContentReady(true);
+    setTransitioning(false);
+
+    // Post-transition cooldown — absorbs trackpad momentum
+    wheelAccum.current = 0;
+    setTimeout(() => { lockedRef.current = false; }, 600);
+  }, []); // stable — uses refs, not state
+
+  /* ── Wheel handler with accumulator ──────────────────────────── */
+  useEffect(() => {
+    const THRESHOLD = 80;
+
+    const handleWheel = (e: WheelEvent) => {
+      e.preventDefault(); // Always prevent — we handle all scrolling manually
+
+      if (lockedRef.current) return;
+
+      // Normalize delta (Firefox uses deltaMode 1 = lines)
+      let delta = e.deltaY;
+      if (e.deltaMode === 1) delta *= 40;
+      else if (e.deltaMode === 2) delta *= window.innerHeight;
+
+      const now = Date.now();
+      if (now - lastWheelTime.current > 200) {
+        wheelAccum.current = 0;
+      }
+      lastWheelTime.current = now;
+
+      const idx = activeIndexRef.current;
+      const wrapper = sectionRefs.current[idx];
+
+      // Handle internal section scroll
+      if (wrapper) {
+        const { scrollTop, scrollHeight, clientHeight } = wrapper;
+        const hasScroll = scrollHeight > clientHeight + 2;
+
+        if (hasScroll) {
+          const atTop = scrollTop <= 0;
+          const atBottom = scrollTop + clientHeight >= scrollHeight - 2;
+
+          if (delta > 0 && !atBottom) {
+            wrapper.scrollTop += delta;
+            wheelAccum.current = 0;
+            return;
+          }
+          if (delta < 0 && !atTop) {
+            wrapper.scrollTop += delta;
+            wheelAccum.current = 0;
+            return;
+          }
+        }
+      }
+
+      // At boundary or no internal scroll — accumulate for page transition
+      wheelAccum.current += delta;
+
+      if (wheelAccum.current > THRESHOLD) {
+        wheelAccum.current = 0;
+        navigateToSection(idx + 1);
+      } else if (wheelAccum.current < -THRESHOLD) {
+        wheelAccum.current = 0;
+        navigateToSection(idx - 1);
+      }
+    };
+
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    return () => window.removeEventListener('wheel', handleWheel);
+  }, [navigateToSection]);
+
+  /* ── Keyboard handler ────────────────────────────────────────── */
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (lockedRef.current) return;
+
+      const idx = activeIndexRef.current;
+
+      if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
+        e.preventDefault();
+        navigateToSection(idx + 1);
+      } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+        e.preventDefault();
+        navigateToSection(idx - 1);
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        navigateToSection(0);
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        navigateToSection(SECTIONS.length - 1);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [navigateToSection]);
+
+  /* ── Touch handler ───────────────────────────────────────────── */
+  useEffect(() => {
+    let startX = 0;
+    let startY = 0;
+    let startTime = 0;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      startTime = Date.now();
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      if (lockedRef.current) return;
+
+      const deltaX = Math.abs(e.changedTouches[0].clientX - startX);
+      const deltaY = startY - e.changedTouches[0].clientY;
+      const absDeltaY = Math.abs(deltaY);
+      const deltaTime = Date.now() - startTime;
+      const idx = activeIndexRef.current;
+
+      // Must be a decisive vertical swipe: far enough, fast enough, mostly vertical
+      if (absDeltaY < 120 || deltaTime > 400 || deltaX > absDeltaY * 0.5) return;
+
+      // Check if the section has internal scroll room in the swipe direction
+      const wrapper = sectionRefs.current[idx];
+      if (wrapper) {
+        const { scrollTop, scrollHeight, clientHeight } = wrapper;
+        const hasScroll = scrollHeight > clientHeight + 2;
+        if (hasScroll) {
+          const atTop = scrollTop <= 0;
+          const atBottom = scrollTop + clientHeight >= scrollHeight - 2;
+          if (deltaY > 0 && !atBottom) return; // still has content below
+          if (deltaY < 0 && !atTop) return;    // still has content above
+        }
+      }
+
+      if (deltaY > 0) {
+        navigateToSection(idx + 1);
+      } else {
+        navigateToSection(idx - 1);
+      }
+    };
+
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchend', handleTouchEnd, { passive: true });
+    return () => {
+      window.removeEventListener('touchstart', handleTouchStart);
+      window.removeEventListener('touchend', handleTouchEnd);
+    };
+  }, [navigateToSection]);
+
+  /* ── Nav callback ────────────────────────────────────────────── */
+  const handleNavigate = useCallback((sectionId: string) => {
+    const idx = SECTIONS.findIndex(s => s.id === sectionId);
+    if (idx >= 0) navigateToSection(idx);
+  }, [navigateToSection]);
+
+  /* ── Custom event listener (HeroButtons etc.) ────────────────── */
+  useEffect(() => {
+    const handler = (e: Event) => {
+      handleNavigate((e as CustomEvent).detail);
+    };
+    window.addEventListener('navigate-section', handler);
+    return () => window.removeEventListener('navigate-section', handler);
+  }, [handleNavigate]);
+
+  /* ── Render ──────────────────────────────────────────────────── */
+  return (
+    <div className="fixed inset-0 overflow-hidden">
+      {/* Background layer — transitions between section bg colors */}
+      <motion.div
+        className="fixed inset-0 z-0"
+        animate={{ backgroundColor: bgColor }}
+        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      />
+
+      {/* Shared watermark — persists between sections, typewriter animates directly */}
+      <div className="fixed top-16 left-0 md:left-[120px] lg:left-[160px] right-0 z-1 pointer-events-none select-none overflow-hidden px-4 md:px-8">
+        <motion.div
+          className="text-[8rem] md:text-[12rem] font-black leading-none tracking-tight text-display whitespace-nowrap"
+          animate={{
+            color: bgIsDark
+              ? (watermarkProminent ? 'rgba(255,255,255,0.12)' : 'rgba(255,255,255,0.03)')
+              : (watermarkProminent ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.03)')
+          }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+        >
+          {watermarkText}
+          <AnimatePresence>
+            {cursorVisible && (
+              <motion.span
+                className="inline-block w-[3px] md:w-[4px] h-[0.75em] ml-1 align-middle"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+              >
+                <span className="block w-full h-full bg-[#6CE5E8] animate-blink" />
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </motion.div>
+      </div>
+
+      <Navigation currentSection={SECTIONS[activeIndex].id} onNavigate={handleNavigate} bgmPlaying={bgmPlaying} onBGMToggle={toggleBGM} bgmAnalyser={bgmAnalyserRef} />
+      <SectionProgress current={activeIndex} total={SECTIONS.length} />
+      <SectionDots current={activeIndex} total={SECTIONS.length} />
+
+      {/* Section Layers — transparent bg, content only */}
+      {SECTIONS.map((section, i) => {
+        const isActive = i === activeIndex;
+        return (
+          <motion.div
+            key={section.id}
+            ref={(el) => { sectionRefs.current[i] = el; }}
+            className={`absolute inset-0 z-2 section-scroll ${
+              isActive ? 'overflow-y-auto' : 'overflow-hidden pointer-events-none'
+            }`}
+            animate={{
+              opacity: isActive && sectionVisible ? 1 : 0,
+            }}
+            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+            style={{
+              visibility: isActive ? 'visible' : 'hidden',
+            }}
+          >
+            {i === 0 && <HeroSection isReady={contentReady && isActive} />}
+            {i === 1 && <AboutSection isReady={contentReady && isActive} />}
+            {i === 2 && <ProjectsSection projects={projects} isReady={contentReady && isActive} />}
+            {i === 3 && <SkillsSection isReady={contentReady && isActive} />}
+            {i === 4 && <GallerySection isReady={contentReady && isActive} />}
+          </motion.div>
+        );
+      })}
+
+      <Cursor />
+    </div>
+  );
+}

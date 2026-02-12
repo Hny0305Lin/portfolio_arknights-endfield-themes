@@ -1,12 +1,69 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<title>拜瑞 | Burial0268</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+		<meta name="description" content="分享我的乐趣" />
+		<meta name="keywords" content="全栈开发,Tauri,设计" />
+		<meta name="author" content="拜瑞 (Burial0268)" />
+
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content="分享我的乐趣 - Baesory" />
+		<meta property="og:description" content="专注于现代技术与动效设计的全栈开发工程师" />
+
+		<!-- Google Fonts: Space Grotesk -->
+		<link rel="preconnect" href="https://fonts.googleapis.cn" />
+		<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+		<link href="https://fonts.googleapis.cn/css2?family=Bebas+Neue&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+		<link rel="icon" type="image/svg+xml" href="/favicon.jpg" />
+		<!-- HarmonyOS Sans -->
+		<link rel="stylesheet" href="https://s1.hdslb.com/bfs/static/jinkela/long/font/regular.css" />
+		<title>分享我的乐趣 - Baesory</title>
 	</head>
 	<body>
+		<div id="loader">
+			<div class="ld-accent"><div class="ld-accent-fill"></div></div>
+			<div class="ld-log">
+				<p style="--i:0">[    0.000000] burial-os 1.0.0-release (gcc 14.2.0) #1 SMP PREEMPT x86_64</p>
+				<p style="--i:1">[    0.003814] BIOS-e820: [mem 0x0000000000000000-0x000000007fffffff] usable</p>
+				<p style="--i:2">[    0.008217] ACPI: RSDP 0x00000000000F0490 000024 (v02 BURIAL)</p>
+				<p style="--i:3" data-smp>[    0.014903] smpboot: Bringing up 12 CPUs / 24 threads</p>
+				<p style="--i:4">[    0.022518] Memory: 16384496K/33554432K available (16384K kernel code)</p>
+				<p style="--i:5">[    0.031264] pci 0000:01:00.0: [10de:2684] type 00 BAR 0 [mem 0xfe000000-0xffffffff]</p>
+				<p style="--i:6" data-drm>[    0.039817] drm: framebuffer [0x0] initialized at 0xfe000000</p>
+				<p style="--i:7">[    0.048290] init[1]: reached target — <span class="ld-ok">system ready</span></p>
+			</div>
+			<div class="ld-brand">BURIAL0268</div>
+			<div class="ld-bottom">
+				<div class="ld-pipe"></div>
+				<div class="ld-pct">0%</div>
+				<div class="ld-status">Initializing<span class="ld-blink">_</span></div>
+			</div>
+			<div class="ld-progress"></div>
+		</div>
+		<script is:inline>
+		(function(){
+			var hwConcurrency = window.navigator.hardwareConcurrency ?? 12
+			var dm=document.querySelector('[data-drm]');
+			var hw = document.querySelector('[data-smp');
+			if(dm)dm.textContent='[    0.039817] drm: framebuffer ['+screen.width+'x'+screen.height+'] initialized at 0xfe000000';
+			if(hw)hw.textContent='[    0.014903] smpboot: Bringing up '+ hwConcurrency +' CPUs / ' + hwConcurrency + ' threads';
+			var s=Date.now(),d=1200,
+				p=document.querySelector('.ld-pct'),
+				a=document.querySelector('.ld-accent-fill');
+			(function tick(){
+				var t=Math.min((Date.now()-s)/d,1),
+					e=1-Math.pow(1-t,3),
+					v=Math.round(e*100);
+				if(p)p.textContent=v+'%';
+				if(a)a.style.height=(e*100)+'%';
+				if(t<1)requestAnimationFrame(tick);
+				else window.__loaderDone=true;
+			})();
+		})();
+		</script>
 		<slot />
 	</body>
 </html>
@@ -17,5 +74,142 @@
 		margin: 0;
 		width: 100%;
 		height: 100%;
+		overflow-x: hidden;
+		-webkit-touch-callout: none; /* 禁止在移动设备上长按文本时显示默认的选择菜单 */
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
+	}
+
+	body {
+		font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+	}
+
+	/* Loader */
+	#loader {
+		position: fixed;
+		inset: 0;
+		z-index: 100;
+		background: #0A0A0A;
+		overflow: hidden;
+		transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+		            transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	#loader.loader-exit {
+		opacity: 0;
+		transform: translateY(-8px);
+		pointer-events: none;
+	}
+
+	.ld-accent {
+		position: absolute;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		width: 3px;
+		background: rgba(255, 255, 255, 0.06);
+	}
+
+	.ld-accent-fill {
+		width: 100%;
+		height: 0%;
+		background: #6CE5E8;
+	}
+
+	.ld-log {
+		position: absolute;
+		top: 24px;
+		left: 20px;
+		right: 20px;
+		font-family: 'Courier New', Consolas, monospace;
+		font-size: 11px;
+		line-height: 1.7;
+		color: rgba(255, 255, 255, 0.35);
+	}
+
+	.ld-log p {
+		margin: 0;
+		opacity: 0;
+		white-space: nowrap;
+		overflow: hidden;
+		animation: ld-type 0.1s ease forwards;
+		animation-delay: calc(var(--i) * 0.07s);
+	}
+
+	.ld-ok {
+		color: #6CE5E8;
+	}
+
+	.ld-brand {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		font-family: 'Space Grotesk', sans-serif;
+		font-size: clamp(28px, 6vw, 52px);
+		font-weight: 700;
+		letter-spacing: 0.12em;
+		color: rgba(255, 255, 255, 0.85);
+		opacity: 0;
+		animation: ld-fade 0.5s ease 0.15s forwards;
+	}
+
+	.ld-bottom {
+		position: absolute;
+		bottom: 40px;
+		left: 20px;
+	}
+
+	.ld-pipe {
+		width: 2px;
+		height: 14px;
+		background: #6CE5E8;
+		margin-bottom: 6px;
+	}
+
+	.ld-pct {
+		font-family: 'Space Grotesk', sans-serif;
+		font-size: clamp(36px, 8vw, 56px);
+		font-weight: 700;
+		color: #6CE5E8;
+		line-height: 1;
+	}
+
+	.ld-status {
+		font-family: 'Courier New', Consolas, monospace;
+		font-size: 11px;
+		color: rgba(255, 255, 255, 0.3);
+		margin-top: 6px;
+		letter-spacing: 0.05em;
+	}
+
+	.ld-blink {
+		animation: ld-cursor 0.6s step-end infinite;
+	}
+
+	.ld-progress {
+		position: absolute;
+		bottom: 0;
+		left: 3px;
+		right: 0;
+		height: 1px;
+		background: rgba(255, 255, 255, 0.06);
+	}
+
+	@keyframes ld-type {
+		from { opacity: 0; transform: translateY(4px); }
+		to   { opacity: 1; transform: translateY(0); }
+	}
+
+	@keyframes ld-fade {
+		from { opacity: 0; }
+		to   { opacity: 1; }
+	}
+
+	@keyframes ld-cursor {
+		0%, 100% { opacity: 1; }
+		50%      { opacity: 0; }
 	}
 </style>

@@ -20,5 +20,13 @@ pnpm-debug.log*
 # macOS-specific files
 .DS_Store
 
+# idk what it is
+nul
+
 # jetbrains setting folder
 .idea/
+
+# shitting ai
+.claude/
+CLAUDE.md
+plan.md

@@ -1,11 +1,15 @@
 ---
-import Landing from '../components/Landing.astro';
 import Layout from '../layouts/Layout.astro';
+import App from '../components/App';
+import { getCollection } from 'astro:content';
 import '@/styles/global.css';
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+
+const projects = await getCollection('projects');
+const projectData = projects
+  .sort((a, b) => a.data.order - b.data.order)
+  .map(p => ({ slug: p.slug, ...p.data }));
 ---
 
 <Layout>
-	<Landing />
+  <App client:load projects={projectData} />
 </Layout>
