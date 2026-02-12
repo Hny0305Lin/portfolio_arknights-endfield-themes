@@ -277,8 +277,8 @@ export default function HeroSection({ isReady = true }: HeroSectionProps) {
           transition={{ duration: 0.6, delay: 1.2, ease: [0.22, 1, 0.36, 1] }}
         >
           <div className="font-mono text-[10px] text-white/30 leading-relaxed">
-            <p>[ PORTOFOLIO 2026 ]</p>
-            <p>INTERFACE & INTERACTION DESIGN</p>
+            <p>[ PORTOFOLIO {(new Date()).getFullYear()} ]</p>
+            <p className='text-display'>// &copy; BAESORY a.k.a BURIAL0268 & 拜瑞</p>
           </div>
 
           {/* Scroll hint — pulsing line */}
