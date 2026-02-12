@@ -12,7 +12,7 @@ interface Photo {
   tag: string;
 }
 
-const PHOTO_CDN_PERFIX = 'https://webstatic.gbclstudio.cn'
+const PHOTO_CDN_PERFIX = 'https://webstatic.gbclstudio.cn';
 
 const photos: Photo[] = [
   { src: '/portfolio/pic01.jpg', title: '染秋', subtitle: '广东 · 2025', tag: '自然' },
@@ -34,6 +34,7 @@ export default function GallerySection({ isReady = false }: GallerySectionProps)
       : { duration: 0.3, delay: 0 };
 
   const [index, setIndex] = useState(0);
+  // 即使使用全量渲染，direction 依然有助于确定非当前图片的静止位置
   const [direction, setDirection] = useState(0);
 
   useEffect(() => {
@@ -54,12 +55,6 @@ export default function GallerySection({ isReady = false }: GallerySectionProps)
 
   const current = photos[index];
   const pad = (n: number) => String(n).padStart(2, '0');
-
-  const variants = {
-    enter: (d: number) => ({ opacity: 0, x: d > 0 ? 60 : -60 }),
-    center: { opacity: 1, x: 0 },
-    exit: (d: number) => ({ opacity: 0, x: d > 0 ? -60 : 60 }),
-  };
 
   return (
     <section className="relative min-h-screen flex flex-col overflow-hidden pt-16 md:pt-20">
@@ -93,7 +88,6 @@ export default function GallerySection({ isReady = false }: GallerySectionProps)
         {/* Main content area */}
         <div className="flex-1 min-w-0 flex flex-col">
           <div className="flex-1 flex flex-col lg:flex-row min-h-0">
-
             {/* Left metadata panel — desktop only */}
             <motion.div
               className="hidden lg:flex w-[280px] xl:w-[320px] shrink-0 flex-col justify-between px-8 xl:px-10 py-10 border-r border-white/8"
@@ -103,12 +97,10 @@ export default function GallerySection({ isReady = false }: GallerySectionProps)
             >
               {/* Top info */}
               <div>
-                {/* Brand tag */}
                 <div className="text-[10px] uppercase tracking-[0.3em] text-white/30 font-mono mb-6">
                   ▼ / BURIAL0268
                 </div>
 
-                {/* Tag */}
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={current.tag}
@@ -126,12 +118,12 @@ export default function GallerySection({ isReady = false }: GallerySectionProps)
                   </motion.div>
                 </AnimatePresence>
 
-                {/* Divider */}
                 <div className="h-px bg-white/8 mb-6" />
 
-                {/* Theme / title */}
                 <div className="mb-5">
-                  <p className="text-[10px] uppercase tracking-widest text-white/30 font-mono mb-1.5">// 主题</p>
+                  <p className="text-[10px] uppercase tracking-widest text-white/30 font-mono mb-1.5">
+                    // 主题
+                  </p>
                   <AnimatePresence mode="wait">
                     <motion.h3
                       key={current.title}
@@ -146,9 +138,10 @@ export default function GallerySection({ isReady = false }: GallerySectionProps)
                   </AnimatePresence>
                 </div>
 
-                {/* Subtitle / location */}
                 <div className="mb-8">
-                  <p className="text-[10px] uppercase tracking-widest text-white/30 font-mono mb-1.5">// 信息</p>
+                  <p className="text-[10px] uppercase tracking-widest text-white/30 font-mono mb-1.5">
+                    // 信息
+                  </p>
                   <AnimatePresence mode="wait">
                     <motion.p
                       key={current.subtitle}
@@ -196,25 +189,37 @@ export default function GallerySection({ isReady = false }: GallerySectionProps)
                 animate={isReady ? { opacity: 1 } : { opacity: 0 }}
                 transition={t(0.15)}
               >
-                <AnimatePresence mode="wait" custom={direction}>
-                  <motion.img
-                    key={current.src}
-                    src={`${PHOTO_CDN_PERFIX}${current.src}`}
-                    alt={current.title}
-                    className="absolute inset-0 w-full h-full object-cover"
-                    custom={direction}
-                    variants={variants}
-                    initial="enter"
-                    animate="center"
-                    exit="exit"
-                    transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                    draggable={false}
-                  />
-                </AnimatePresence>
+                {photos.map((photo, i) => {
+                  // 计算每张图片相对于当前 index 的状态
+                  const isActive = i === index;
+                  const isBefore = i < index;
+                  // 如果是当前图片，x=0。如果在左边，x=-100(或-40)。如果在右边，x=100(或40)。
+                  const xPos = isActive ? 0 : isBefore ? -40 : 40;
+                  
+                  return (
+                    <motion.img
+                      key={photo.src}
+                      src={`${PHOTO_CDN_PERFIX}${photo.src}`}
+                      alt={photo.title}
+                      className="absolute inset-0 w-full h-full object-cover"
+                      animate={{
+                        opacity: isActive ? 1 : 0,
+                        x: xPos,
+                        scale: isActive ? 1 : 1.02, // 细微缩放效果
+                        zIndex: isActive ? 10 : 0,
+                        // 当图片变的不活跃时，禁用指针事件，防止误触
+                        pointerEvents: isActive ? 'auto' : 'none', 
+                      }}
+                      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                      draggable={false}
+                      loading="eager" 
+                    />
+                  );
+                })}
 
                 {/* Right-edge vertical text */}
                 <motion.div
-                  className="absolute right-4 top-1/2 -translate-y-1/2 hidden md:block"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 hidden md:block z-20 pointer-events-none"
                   initial={{ opacity: 0 }}
                   animate={isReady ? { opacity: 1 } : { opacity: 0 }}
                   transition={t(0.5)}
@@ -225,8 +230,8 @@ export default function GallerySection({ isReady = false }: GallerySectionProps)
                 </motion.div>
 
                 {/* Corner crosshairs */}
-                <div className="absolute top-4 right-4 w-4 h-4 border-t border-r border-white/20 hidden md:block" />
-                <div className="absolute bottom-4 left-4 w-4 h-4 border-b border-l border-white/20 hidden md:block" />
+                <div className="absolute top-4 right-4 w-4 h-4 border-t border-r border-white/20 hidden md:block z-20" />
+                <div className="absolute bottom-4 left-4 w-4 h-4 border-b border-l border-white/20 hidden md:block z-20" />
               </motion.div>
 
               {/* Mobile: photo info overlay at bottom of image */}
@@ -240,7 +245,9 @@ export default function GallerySection({ isReady = false }: GallerySectionProps)
                   <div>
                     <div className="flex items-center gap-2 mb-1">
                       <span className="inline-block w-3 h-2 bg-white -skew-x-12" />
-                      <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-gray-400">{current.tag}</span>
+                      <span className="text-[10px] font-bold uppercase tracking-[0.15em] text-gray-400">
+                        {current.tag}
+                      </span>
                     </div>
                     <AnimatePresence mode="wait">
                       <motion.h3
@@ -266,7 +273,7 @@ export default function GallerySection({ isReady = false }: GallerySectionProps)
 
           {/* Bottom: navigation bar */}
           <motion.div
-            className="shrink-0 h-12 md:h-14 border-t border-white/8 flex items-center justify-between px-5 md:px-8"
+            className="shrink-0 h-12 md:h-14 border-t border-white/8 flex items-center justify-between px-5 md:px-8 bg-[#0A0A0A] relative z-20"
             initial={{ y: 15, opacity: 0 }}
             animate={showY}
             transition={t(0.5)}
@@ -300,19 +307,30 @@ export default function GallerySection({ isReady = false }: GallerySectionProps)
 
           {/* Footer bar */}
           <motion.div
-            className="shrink-0 border-t border-white/8 bg-[#0A0A0A] px-5 md:px-8 py-3 flex flex-col md:flex-row md:items-center md:justify-between gap-1.5 md:gap-0"
+            className="shrink-0 border-t border-white/8 bg-[#0A0A0A] px-5 md:px-8 py-3 flex flex-col md:flex-row md:items-center md:justify-between gap-1.5 md:gap-0 relative z-20"
             initial={{ y: 15, opacity: 0 }}
             animate={showY}
             transition={t(0.6)}
           >
             <p className="text-[10px] text-white/30 font-mono uppercase tracking-wider">
-              &copy; 2025 BURIAL0268 <span className="text-white/15">&middot;</span> Built with Astro
+              &copy; {(new Date().getFullYear())} BURIAL0268 <span className="text-white/15">&middot;</span> Built with
+              Astro
             </p>
             <div className="flex items-center gap-3 text-[10px] text-white/20 font-mono">
-              <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer" className="hover:text-[#6CE5E8] text-display transition-colors duration-300">
+              <a
+                href="https://beian.miit.gov.cn/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-[#6CE5E8] text-display transition-colors duration-300"
+              >
                 粤ICP备2022073442号-1
               </a>
-              <a href="https://beian.mps.gov.cn/#/query/webSearch?code=44162302000035" target="_blank" rel="noopener noreferrer" className="hover:text-[#6CE5E8] text-display transition-colors duration-300">
+              <a
+                href="https://beian.mps.gov.cn/#/query/webSearch?code=44162302000035"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-[#6CE5E8] text-display transition-colors duration-300"
+              >
                 粤公网安备44162302000035号
               </a>
             </div>
