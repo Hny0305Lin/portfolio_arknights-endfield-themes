@@ -15,7 +15,8 @@ export function useBGM() {
     const audio = audioRef.current;
     if (!audio || sourceCreated.current) return;
 
-    const ctx = new AudioContext();
+    const AudioContextCtor = window.AudioContext || (window as any).webkitAudioContext;
+    const ctx = new AudioContextCtor();
     const source = ctx.createMediaElementSource(audio);
     const analyser = ctx.createAnalyser();
     analyser.fftSize = 64;
@@ -32,6 +33,10 @@ export function useBGM() {
     const audio = new Audio('/bgm.mp3');
     audio.loop = true;
     audio.volume = 0.3;
+    audio.preload = 'auto';
+    audio.crossOrigin = 'anonymous';
+    (audio as any).playsInline = true;
+    audio.setAttribute('playsinline', 'true');
     audioRef.current = audio;
 
     const syncPlaying = () => setPlaying(!audio.paused);
@@ -39,8 +44,12 @@ export function useBGM() {
     audio.addEventListener('pause', syncPlaying);
     audio.addEventListener('ended', syncPlaying);
 
-    const events = ['pointerdown', 'click', 'keydown', 'touchend'] as const;
+    const events = ['pointerdown', 'mousedown', 'touchstart', 'touchend', 'keydown', 'click', 'wheel'] as const;
     const isDisabled = () => window.localStorage.getItem(STORAGE_KEY) === '1';
+
+    const removeListeners = () => {
+      events.forEach((e) => window.removeEventListener(e, startOnInteraction, { capture: true } as any));
+    };
 
     const tryStart = async () => {
       if (isDisabled()) return false;
@@ -62,21 +71,33 @@ export function useBGM() {
       }
     };
 
-    const startOnInteraction = async () => {
+    const startOnInteraction = () => {
       if (isDisabled()) return;
-      const ok = await tryStart();
-      if (ok) removeListeners();
-    };
-
-    const removeListeners = () => {
-      events.forEach((e) => window.removeEventListener(e, startOnInteraction));
+      if (starting.current) return;
+      starting.current = true;
+      try {
+        ensureAudioContext();
+        if (audioCtxRef.current?.state === 'suspended') {
+          audioCtxRef.current.resume().catch(() => { });
+        }
+        const p = audio.play();
+        p.then(() => {
+          hasStarted.current = true;
+          setPlaying(true);
+          removeListeners();
+        }).catch(() => { }).finally(() => {
+          starting.current = false;
+        });
+      } catch {
+        starting.current = false;
+      }
     };
 
     const init = async () => {
       if (isDisabled()) return;
       const ok = await tryStart();
       if (ok) return;
-      events.forEach((e) => window.addEventListener(e, startOnInteraction, { passive: true }));
+      events.forEach((e) => window.addEventListener(e, startOnInteraction, { passive: true, capture: true }));
     };
 
     const onReady = () => {
