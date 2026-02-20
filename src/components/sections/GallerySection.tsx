@@ -15,6 +15,9 @@ interface Photo {
 const PHOTO_CDN_PERFIX = 'https://image34.567890123.xyz';
 
 const photos: Photo[] = [
+  { src: '/2026/01/1769864151355.webp', title: '松山湖系列', subtitle: '华为颁奖 · 2024', tag: '荣誉' },
+  { src: '/2026/01/1769864151418.webp', title: '松山湖系列', subtitle: '华为颁奖 · 2024', tag: '荣誉' },
+  { src: '/2026/01/1769864151388.webp', title: '松山湖系列', subtitle: '华为颁奖 · 2024', tag: '荣誉' },
   { src: '/portfolio/1.webp', title: '海景', subtitle: '福建平潭 · 2024', tag: '自然' },
   { src: '/portfolio/2.webp', title: '创新创业大赛', subtitle: '预警前线 · 2023', tag: '科技' },
   { src: '/portfolio/3.webp', title: '创新创业大赛', subtitle: '活土壤 · 2024', tag: '科技' },
