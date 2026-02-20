@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import Typed from 'typed.js';
 import HeroButtons from '../HeroButtons';
 import Marquee from '../effects/Marquee';
 
-const bannerTopItems = Array(8).fill('BURIAL0268\u00A0\u00A0\u00B7\u00A0\u00A0');
-const bannerBottomItems = Array(9).fill('CREATIVE\u00A0DEVELOPER\u00A0\u00A0\u00B7\u00A0\u00A0');
+const bannerTopItems = Array(8).fill('HNY0305LIN\u00A0\u00A0\u00B7\u00A0\u00A0');
+const bannerBottomItems = Array(9).fill('BASED\u00A0IN\u00A0FUZHOU\u00A0\u00A0\u00B7\u00A0\u00A0LOVE\u00A0CHINA\u00A0\u00A0\u00B7\u00A0\u00A0');
 
 interface HeroSectionProps {
   isReady?: boolean;
@@ -20,6 +21,7 @@ export default function HeroSection({ isReady = true }: HeroSectionProps) {
   // Boot sequence state — plays once on first mount
   const [booted, setBooted] = useState(false);
   const hasBooted = useRef(false);
+  const typedEl = useRef<HTMLSpanElement | null>(null);
 
   useEffect(() => {
     if (isReady && !hasBooted.current) {
@@ -28,6 +30,42 @@ export default function HeroSection({ isReady = true }: HeroSectionProps) {
       return () => clearTimeout(timer);
     }
   }, [isReady]);
+
+  useEffect(() => {
+    if (!booted) return;
+    const el = typedEl.current;
+    if (!el) return;
+
+    const prefersReducedMotion =
+      typeof window !== 'undefined' &&
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    if (prefersReducedMotion) {
+      el.innerHTML = '&gt; STACK: Embedded + Full-Stack (Frontend & Backend) + Web3<br/>&lt;CREATIVE.DEV /&gt;';
+      return;
+    }
+
+    const typed = new Typed(el, {
+      strings: [
+        '&gt; STACK: Embedded + Full-Stack (Frontend & Backend) + Web3<br/>&lt;CREATIVE.DEV /&gt;',
+        '&gt; BUILD: IoT · Android · Web · AI<br/>&lt;SHIP.IT /&gt;',
+        '&gt; FOCUS: Performance · UX · Clean Code<br/>&lt;KEEP.GOING /&gt;',
+      ],
+      typeSpeed: 24,
+      backSpeed: 12,
+      startDelay: 250,
+      backDelay: 1500,
+      smartBackspace: true,
+      loop: true,
+      showCursor: true,
+      cursorChar: '▍',
+    });
+
+    return () => {
+      typed.destroy();
+    };
+  }, [booted]);
 
   return (
     <section id="home" className="relative min-h-screen w-full overflow-x-clip bg-[#0A0A0A] flex flex-col">
@@ -73,7 +111,7 @@ export default function HeroSection({ isReady = true }: HeroSectionProps) {
 
       {/* ── Fixed color mask — AK-style tonal contrast block ─── */}
       <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 3 }}>
-        {/* Cyan mask with vertical "Baesory" text cutout */}
+        {/* Cyan mask with vertical "Hny0305Lin" text cutout */}
         <motion.div
           className="absolute right-0 top-[8%] w-[200px] md:w-[300px] h-[70vh] md:h-[80vh]"
           initial={{ clipPath: 'inset(0 0 100% 0)' }}
@@ -95,7 +133,7 @@ export default function HeroSection({ isReady = true }: HeroSectionProps) {
                   letterSpacing="0.05em"
                   transform="rotate(90, 150, 400)"
                 >
-                  BAESORY
+                  HNY0305LIN
                 </text>
               </mask>
             </defs>
@@ -199,9 +237,8 @@ export default function HeroSection({ isReady = true }: HeroSectionProps) {
           <span className="text-[10px] md:text-xs font-bold uppercase tracking-[0.3em] text-white/40 font-mono">
             // SUPER::PORTFOLIO::CORE::init()
           </span>
-          <div className="text-right font-mono text-[10px] text-[#6CE5E8]/60 leading-relaxed hidden md:block">
-            <div>{"> STACK: REACT / MOTION / VUE"}</div>
-            <div>{"<CREATIVE.DEV />"}</div>
+          <div className="text-right font-mono text-[10px] text-[#6CE5E8]/60 leading-relaxed hidden md:block h-[34px] overflow-hidden">
+            <span ref={typedEl} className="block" />
           </div>
         </motion.div>
 
@@ -221,7 +258,7 @@ export default function HeroSection({ isReady = true }: HeroSectionProps) {
                 animate={booted ? { y: 0 } : { y: '100%' }}
                 transition={{ duration: 0.5, delay: 0.6, ease: [0.22, 1, 0.36, 1] }}
               >
-                ▼ Full Stack Developer & Animation Enthusiast
+                ▼ Full Stack Developer & Java / Android Developer · IoT · AI
               </motion.span>
             </motion.div>
 
@@ -234,7 +271,7 @@ export default function HeroSection({ isReady = true }: HeroSectionProps) {
                 animate={booted ? { y: 0 } : { y: '150%' }}
                 transition={{ duration: 0.7, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
               >
-                Baesory
+                林孟嘉
               </motion.h1>
             </div>
 
@@ -246,7 +283,7 @@ export default function HeroSection({ isReady = true }: HeroSectionProps) {
                 animate={booted ? { y: 0 } : { y: '150%' }}
                 transition={{ duration: 0.7, delay: 0.5, ease: [0.22, 1, 0.36, 1] }}
               >
-                拜瑞
+                Hny0305Lin
               </motion.h2>
             </div>
 
@@ -278,7 +315,7 @@ export default function HeroSection({ isReady = true }: HeroSectionProps) {
         >
           <div className="font-mono text-[10px] text-white/30 leading-relaxed">
             <p>[ PORTFOLIO {(new Date()).getFullYear()} ]</p>
-            <p className='text-display'>// &copy; BAESORY a.k.a BURIAL0268 & 拜瑞</p>
+            <p className='text-display'>// &copy; Hny0305Lin & 林孟嘉</p>
           </div>
 
           {/* Scroll hint — pulsing line */}

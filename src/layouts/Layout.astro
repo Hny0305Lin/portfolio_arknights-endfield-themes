@@ -1,3 +1,7 @@
+---
+import pkg from "../../package.json";
+---
+
 <!doctype html>
 <html lang="zh-CN">
 	<head>
@@ -6,40 +10,48 @@
 			name="viewport"
 			content="width=device-width, initial-scale=1.0, maximum-scale=1.0"
 		/>
-		<meta name="description" content="分享我的乐趣" />
-		<meta name="keywords" content="全栈开发,Tauri,设计" />
-		<meta name="author" content="拜瑞 (Burial0268)" />
+		<meta name="description" content="Based in Fuzhou, love China🎉" />
+		<meta
+			name="keywords"
+			content="Java,Android,IoT,AI,Embedded,HarmonyOS,NearLink,Astro,Linux"
+		/>
+		<meta name="author" content="苏沐瑶 (Hny0305Lin)" />
 
 		<!-- Open Graph / Facebook -->
 		<meta property="og:type" content="website" />
-		<meta property="og:title" content="分享我的乐趣 - Baesory" />
+		<meta
+			property="og:title"
+			content="天才也许就在这一份网页里 - Hny0305Lin"
+		/>
 		<meta
 			property="og:description"
-			content="专注于现代技术与动效设计的全栈开发工程师"
+			content="Java / Android 开发者，物联网应用与 AI 学习中"
 		/>
 
 		<!-- Google Fonts: Space Grotesk -->
-		<link rel="preconnect" href="https://fonts.googleapis.cn" />
-		<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link
-			href="https://fonts.googleapis.cn/css2?family=Bebas+Neue&family=Space+Grotesk:wght@500;600;700&display=swap"
+			href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@500;600;700&display=swap"
 			rel="stylesheet"
 		/>
 
-		<link rel="icon" type="image/svg+xml" href="/favicon.jpg" />
+		<!--link rel="icon" type="image/svg+xml" href="/favicon.jpg" /-->
 		<!-- HarmonyOS Sans -->
 		<link
 			rel="stylesheet"
 			href="https://s1.hdslb.com/bfs/static/jinkela/long/font/regular.css"
 		/>
-		<title>分享我的乐趣 - Baesory</title>
+		<title>天才也许就在这一份网页里 - Hny0305Lin's Portfolio</title>
 	</head>
 	<body>
 		<div id="loader">
 			<div class="ld-accent"><div class="ld-accent-fill"></div></div>
 			<div class="ld-log">
 				<p style="--i:0">
-					[ 0.000000] burial-os 1.0.0-release (gcc 14.2.0) #1 SMP
+					{
+						`[ 0.000000] haohanyh-os ${pkg.version}-release (astro ${pkg.dependencies.astro}) #1 SMP`
+					}
 					PREEMPT x86_64
 				</p>
 				<p style="--i:1">
@@ -48,7 +60,7 @@
 				</p>
 				<p style="--i:2">
 					[ 0.008217] ACPI: RSDP 0x00000000000F0490 000024 (v02
-					BURIAL)
+					HAOHANYH)
 				</p>
 				<p style="--i:3" data-smp>
 					[ 0.014903] smpboot: Bringing up 12 CPUs / 24 threads
@@ -66,7 +78,8 @@
 				</p>
 				<p style="--i:7">
 					[ 0.048290] init[1]: reached target — <span class="ld-ok"
-						>system ready</span>
+						>system ready boot...</span
+					>
 				</p>
 			</div>
 			<svg class="ld-brand" viewBox="0 0 212 50"></svg>
@@ -80,50 +93,84 @@
 			<div class="ld-progress"></div>
 		</div>
 		<script is:inline>
-			(function(){
-				var hwConcurrency = window.navigator.hardwareConcurrency ?? 12
-				var dm=document.querySelector('[data-drm]');
-				var hw = document.querySelector('[data-smp');
-				if(dm)dm.textContent='[    0.039817] drm: framebuffer ['+screen.width+'x'+screen.height+'] initialized at 0xfe000000';
-				if(hw)hw.textContent='[    0.014903] smpboot: Bringing up '+ hwConcurrency +' CPUs / ' + hwConcurrency + ' threads';
-			
-				var G={
-					B:[[0,0,0,40],[0,0,20,0],[20,0,20,20],[0,20,20,20],[20,20,20,40],[0,40,20,40]],
-					A:[[0,40,10,0],[10,0,20,40],[5,24,15,24]],
-					E:[[0,0,0,40],[0,0,20,0],[0,20,16,20],[0,40,20,40]],
-					S:[[0,0,20,0],[0,0,0,20],[0,20,20,20],[20,20,20,40],[0,40,20,40]],
-					O:[[0,0,20,0],[0,0,0,40],[20,0,20,40],[0,40,20,40]],
-					R:[[0,0,0,40],[0,0,20,0],[20,0,20,20],[0,20,20,20],[10,20,20,40]],
-					Y:[[0,0,10,20],[20,0,10,20],[10,20,10,40]]
+			(function () {
+				var hwConcurrency = window.navigator.hardwareConcurrency ?? 12;
+				var dm = document.querySelector("[data-drm]");
+				var hw = document.querySelector("[data-smp]");
+				if (dm)
+					dm.textContent =
+						"[    0.039817] drm: framebuffer [" +
+						screen.width +
+						"x" +
+						screen.height +
+						"] initialized at 0xfe000000";
+				if (hw)
+					hw.textContent =
+						"[    0.014903] smpboot: Bringing up " +
+						hwConcurrency +
+						" CPUs / " +
+						hwConcurrency +
+						" threads";
+
+				var G = {
+					H: [
+						[0, 0, 0, 40],
+						[20, 0, 20, 40],
+						[0, 20, 20, 20],
+					],
+					A: [
+						[0, 40, 10, 0],
+						[10, 0, 20, 40],
+						[5, 24, 15, 24],
+					],
+					O: [
+						[0, 0, 20, 0],
+						[0, 0, 0, 40],
+						[20, 0, 20, 40],
+						[0, 40, 20, 40],
+					],
+					N: [
+						[0, 0, 0, 40],
+						[20, 0, 20, 40],
+						[0, 0, 20, 40],
+					],
+					Y: [
+						[0, 0, 10, 20],
+						[20, 0, 10, 20],
+						[10, 20, 10, 40],
+					],
 				};
-				var ns='http://www.w3.org/2000/svg', sv=document.querySelector('.ld-brand'),
-					tx='BAESORY', xO=0;
-				var centerX = (tx.length * 32) / 2; 
+				var ns = "http://www.w3.org/2000/svg",
+					sv = document.querySelector(".ld-brand"),
+					tx = "HAOHANYH",
+					xO = 0;
+				var centerX = (tx.length * 32) / 2;
 				var centerY = 25;
-				for(var c=0; c<tx.length; c++){
-					var sg=G[tx[c]];
-					for(var j=0; j<sg.length; j++){
-						var ln=document.createElementNS(ns,'line');
-						var x1 = xO+sg[j][0];
-						var y1 = 5+sg[j][1];
-						var x2 = xO+sg[j][2];
-						var y2 = 5+sg[j][3];
-						ln.setAttribute('x1', x1);
-						ln.setAttribute('y1', y1);
-						ln.setAttribute('x2', x2);
-						ln.setAttribute('y2', y2);
+				for (var c = 0; c < tx.length; c++) {
+					var sg = G[tx[c]];
+					for (var j = 0; j < sg.length; j++) {
+						var ln = document.createElementNS(ns, "line");
+						var x1 = xO + sg[j][0];
+						var y1 = 5 + sg[j][1];
+						var x2 = xO + sg[j][2];
+						var y2 = 5 + sg[j][3];
+						ln.setAttribute("x1", x1);
+						ln.setAttribute("y1", y1);
+						ln.setAttribute("x2", x2);
+						ln.setAttribute("y2", y2);
 						var isH = Math.abs(y1 - y2) < 0.1; // 是否是横线
 						var isV = Math.abs(x1 - x2) < 0.1; // 是否是竖线
-						
+
 						// 计算当前线条的几何中心
 						var midX = (x1 + x2) / 2;
 						var midY = (y1 + y2) / 2;
-			
-						var dx = 0, dy = 0;
+
+						var dx = 0,
+							dy = 0;
 						// 偏移量：设置大一点，确保从屏幕外飞入
-						var dist = 300; 
-			
-						if(isH) {
+						var dist = 300;
+
+						if (isH) {
 							// 如果是横线：
 							// 在中心左边 -> 从左侧(-dist)飞入
 							// 在中心右边 -> 从右侧(+dist)飞入
@@ -140,37 +187,41 @@
 							dx = (midX < centerX ? -1 : 1) * dist;
 							dy = (midY < centerY ? -1 : 1) * dist;
 						}
-			
-						ln.style.setProperty('--dx', dx+'px');
-						ln.style.setProperty('--dy', dy+'px');
-			
+
+						ln.style.setProperty("--dx", dx + "px");
+						ln.style.setProperty("--dy", dy + "px");
+
 						// 范围 0.1s ~ 0.5s 之间随机
-						ln.style.setProperty('--d', (0.1 + Math.random() * 0.4) + 's');
-						
+						ln.style.setProperty(
+							"--d",
+							0.1 + Math.random() * 0.4 + "s",
+						);
+
 						sv.appendChild(ln);
 					}
-					xO+=32;
+					xO += 32;
 				}
-			
+
 				// 进度条逻辑
-				var s=Date.now(), d=1800,
-					p=document.querySelector('.ld-pct'),
-					a=document.querySelector('.ld-accent-fill');
-				(function tick(){
-					var t=Math.min((Date.now()-s)/d, 1),
-						e=1-Math.pow(1-t, 3),
-						v=Math.round(e*100);
-					if(p)p.textContent=v+'%';
-					if(a)a.style.height=(e*100)+'%';
-					if(t<1)requestAnimationFrame(tick);
-					else{
-						window.__loaderDone=true;
-						var ok=document.querySelector('.ld-ok');
-						if(ok)ok.style.opacity='1';
+				var s = Date.now(),
+					d = 1800,
+					p = document.querySelector(".ld-pct"),
+					a = document.querySelector(".ld-accent-fill");
+				(function tick() {
+					var t = Math.min((Date.now() - s) / d, 1),
+						e = 1 - Math.pow(1 - t, 3),
+						v = Math.round(e * 100);
+					if (p) p.textContent = v + "%";
+					if (a) a.style.height = e * 100 + "%";
+					if (t < 1) requestAnimationFrame(tick);
+					else {
+						window.__loaderDone = true;
+						var ok = document.querySelector(".ld-ok");
+						if (ok) ok.style.opacity = "1";
 					}
 				})();
 			})();
-			</script>
+		</script>
 		<slot />
 	</body>
 </html>
@@ -206,11 +257,52 @@
 		position: fixed;
 		inset: 0;
 		z-index: 100;
-		background: #0a0a0a;
+		background:
+			radial-gradient(
+				ellipse 80% 70% at 30% 25%,
+				rgba(108, 229, 232, 0.06) 0%,
+				rgba(10, 10, 10, 0) 55%
+			),
+			#0a0a0a;
 		overflow: hidden;
+		animation: ld-flicker 7s infinite;
 		transition:
 			opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
 			transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+	}
+
+	#loader::before {
+		content: "";
+		position: absolute;
+		inset: 0;
+		pointer-events: none;
+		background: repeating-linear-gradient(
+			to bottom,
+			rgba(255, 255, 255, 0.05) 0px,
+			rgba(255, 255, 255, 0.05) 1px,
+			rgba(0, 0, 0, 0) 2px,
+			rgba(0, 0, 0, 0) 5px
+		);
+		opacity: 0.12;
+		mix-blend-mode: overlay;
+		animation: ld-scan 6s linear infinite;
+	}
+
+	#loader::after {
+		content: "";
+		position: absolute;
+		inset: -20%;
+		pointer-events: none;
+		background: repeating-linear-gradient(
+			45deg,
+			rgba(255, 255, 255, 0.02) 0px,
+			rgba(255, 255, 255, 0.02) 1px,
+			rgba(0, 0, 0, 0) 2px,
+			rgba(0, 0, 0, 0) 6px
+		);
+		opacity: 0.07;
+		filter: blur(0.3px);
+		animation: ld-noise 0.9s steps(2, end) infinite;
 	}
 
 	#loader.loader-exit {
@@ -243,6 +335,7 @@
 		font-size: 11px;
 		line-height: 1.7;
 		color: rgba(255, 255, 255, 0.35);
+		text-shadow: 0 0 10px rgba(108, 229, 232, 0.12);
 	}
 
 	.ld-log p {
@@ -250,8 +343,12 @@
 		opacity: 0;
 		white-space: nowrap;
 		overflow: hidden;
-		animation: ld-type 0.1s ease forwards;
-		animation-delay: calc(var(--i) * 0.07s);
+		clip-path: inset(0 100% 0 0);
+		animation:
+			ld-type 0.12s ease forwards,
+			ld-reveal 0.7s steps(40, end) forwards,
+			ld-glitch 6s infinite;
+		animation-delay: calc(var(--i) * 0.07s), calc(var(--i) * 0.07s), 0s;
 	}
 
 	.ld-ok {
@@ -277,6 +374,25 @@
 		transform: translate(var(--dx), var(--dy));
 		animation: ld-assemble 0.6s cubic-bezier(0.2, 1, 0.3, 1) forwards;
 		animation-delay: var(--d);
+	}
+
+	.ld-brand text {
+		fill: rgba(255, 255, 255, 0.85);
+		font-family:
+			"Space Grotesk",
+			-apple-system,
+			BlinkMacSystemFont,
+			"Segoe UI",
+			Roboto,
+			"Helvetica Neue",
+			Arial,
+			sans-serif;
+		font-size: 54px;
+		font-weight: 700;
+		letter-spacing: 0.18em;
+		opacity: 0;
+		animation: ld-deco-in 0.6s cubic-bezier(0.2, 1, 0.3, 1) forwards;
+		animation-delay: 0.2s;
 	}
 
 	.ld-bottom {
@@ -332,6 +448,12 @@
 		}
 	}
 
+	@keyframes ld-reveal {
+		to {
+			clip-path: inset(0 0 0 0);
+		}
+	}
+
 	@keyframes ld-assemble {
 		to {
 			opacity: 1;
@@ -342,6 +464,83 @@
 	@keyframes ld-deco-in {
 		to {
 			opacity: 1;
+		}
+	}
+
+	@keyframes ld-scan {
+		0% {
+			transform: translateY(-8%);
+		}
+		100% {
+			transform: translateY(8%);
+		}
+	}
+
+	@keyframes ld-noise {
+		0% {
+			transform: translate3d(-2%, -1%, 0);
+		}
+		25% {
+			transform: translate3d(1%, 2%, 0);
+		}
+		50% {
+			transform: translate3d(-1%, 1%, 0);
+		}
+		75% {
+			transform: translate3d(2%, -2%, 0);
+		}
+		100% {
+			transform: translate3d(-2%, -1%, 0);
+		}
+	}
+
+	@keyframes ld-glitch {
+		0%,
+		92%,
+		100% {
+			text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+			transform: translateX(0);
+		}
+		93% {
+			text-shadow:
+				1px 0 rgba(108, 229, 232, 0.35),
+				-1px 0 rgba(255, 255, 255, 0.15);
+			transform: translateX(-1px);
+		}
+		94% {
+			text-shadow:
+				-1px 0 rgba(108, 229, 232, 0.25),
+				2px 0 rgba(255, 255, 255, 0.08);
+			transform: translateX(1px);
+		}
+		95% {
+			text-shadow: 0 0 0 rgba(0, 0, 0, 0);
+			transform: translateX(0);
+		}
+	}
+
+	@keyframes ld-flicker {
+		0%,
+		100% {
+			filter: brightness(1) contrast(1);
+		}
+		58% {
+			filter: brightness(1.03) contrast(1.05);
+		}
+		60% {
+			filter: brightness(0.96) contrast(1.12);
+		}
+		62% {
+			filter: brightness(1.02) contrast(1.06);
+		}
+		88% {
+			filter: brightness(1) contrast(1);
+		}
+		89% {
+			filter: brightness(0.93) contrast(1.2);
+		}
+		90% {
+			filter: brightness(1.04) contrast(1.08);
 		}
 	}
 

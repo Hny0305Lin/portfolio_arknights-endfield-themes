@@ -8,6 +8,7 @@ import ProjectsSection from './sections/ProjectsSection';
 import SkillsSection from './sections/SkillsSection';
 import GallerySection from './sections/GallerySection';
 import Cursor from './effects/Cursor';
+import AwardsSection from './sections/AwardsSection';
 
 interface Project {
   slug: string;
@@ -20,14 +21,29 @@ interface Project {
   order: number;
 }
 
+interface Award {
+  slug: string;
+  title: string;
+  description: string;
+  tags: string[];
+  body?: string;
+  link?: string;
+  github?: string;
+  year: number;
+  featured: boolean;
+  order: number;
+}
+
 interface AppProps {
   projects: Project[];
+  awards?: Award[];
 }
 
 const SECTIONS = [
   { id: 'home', watermark: '', bg: '#0A0A0A', isDark: true },
   { id: 'about', watermark: 'ABOUT', bg: '#FAFAFA', isDark: false },
   { id: 'projects', watermark: 'WORKS', bg: '#0A0A0A', isDark: true },
+  { id: 'awards', watermark: 'AWARDS', bg: '#FFFFFF', isDark: false },
   { id: 'skills', watermark: 'SKILLS', bg: '#FFFFFF', isDark: false },
   { id: 'gallery', watermark: 'GALLERY', bg: '#0A0A0A', isDark: true },
 ] as const;
@@ -98,7 +114,7 @@ function SectionProgress({ current, total }: { current: number; total: number })
 }
 
 /* ── Main App ────────────────────────────────────────────────────── */
-export default function App({ projects }: AppProps) {
+export default function App({ projects, awards = [] }: AppProps) {
   const { playing: bgmPlaying, toggle: toggleBGM, analyserRef: bgmAnalyserRef } = useBGM();
   const [activeIndex, setActiveIndex] = useState(0);
   const [transitioning, setTransitioning] = useState(false);
@@ -144,9 +160,13 @@ export default function App({ projects }: AppProps) {
           el.addEventListener('transitionend', () => {
             el.remove();
             setContentReady(true);
+            (window as any).__bgmAutoplayReady = true;
+            window.dispatchEvent(new Event('bgm-autoplay-ready'));
           }, { once: true });
         } else {
           setContentReady(true);
+          (window as any).__bgmAutoplayReady = true;
+          window.dispatchEvent(new Event('bgm-autoplay-ready'));
         }
       }, 300);
     }
@@ -433,9 +453,8 @@ export default function App({ projects }: AppProps) {
           <motion.div
             key={section.id}
             ref={(el) => { sectionRefs.current[i] = el; }}
-            className={`absolute inset-0 z-2 section-scroll ${
-              isActive ? 'overflow-y-auto' : 'overflow-hidden pointer-events-none'
-            }`}
+            className={`absolute inset-0 z-2 section-scroll ${isActive ? 'overflow-y-auto' : 'overflow-hidden pointer-events-none'
+              }`}
             animate={{
               opacity: isActive && sectionVisible ? 1 : 0,
             }}
@@ -447,8 +466,9 @@ export default function App({ projects }: AppProps) {
             {i === 0 && <HeroSection isReady={contentReady && isActive} />}
             {i === 1 && <AboutSection isReady={contentReady && isActive} />}
             {i === 2 && <ProjectsSection projects={projects} isReady={contentReady && isActive} />}
-            {i === 3 && <SkillsSection isReady={contentReady && isActive} />}
-            {i === 4 && <GallerySection isReady={contentReady && isActive} />}
+            {i === 3 && <AwardsSection awards={awards} isReady={contentReady && isActive} />}
+            {i === 4 && <SkillsSection isReady={contentReady && isActive} />}
+            {i === 5 && <GallerySection isReady={contentReady && isActive} />}
           </motion.div>
         );
       })}

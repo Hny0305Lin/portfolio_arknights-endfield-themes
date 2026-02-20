@@ -12,17 +12,15 @@ interface Photo {
   tag: string;
 }
 
-const PHOTO_CDN_PERFIX = 'https://webstatic.gbclstudio.cn';
+const PHOTO_CDN_PERFIX = 'https://image34.567890123.xyz';
 
 const photos: Photo[] = [
-  { src: '/portfolio/pic01.jpg', title: '染秋', subtitle: '广东 · 2025', tag: '自然' },
-  { src: '/portfolio/pic02.jpg', title: '叶罅', subtitle: '广东 · 2024', tag: '自然' },
-  { src: '/portfolio/pic03.jpg', title: '新洁', subtitle: '广东 · 2024', tag: '自然' },
-  { src: '/portfolio/pic04.jpg', title: '远望', subtitle: '广东 · 2024', tag: '人文' },
-  { src: '/portfolio/pic05.jpg', title: '云岫', subtitle: '广东 · 2025', tag: '自然' },
-  { src: '/portfolio/pic06.jpg', title: '燃犀', subtitle: '广东 · 2025', tag: '自然' },
-  { src: '/portfolio/pic07.jpg', title: '叠城', subtitle: '上海 · 2023', tag: '街拍' },
-  { src: '/portfolio/pic08.jpg', title: '伫听', subtitle: '上海 · 2023', tag: '自然' },
+  { src: '/portfolio/1.webp', title: '海景', subtitle: '福建平潭 · 2024', tag: '自然' },
+  { src: '/portfolio/2.webp', title: '创新创业大赛', subtitle: '预警前线 · 2023', tag: '科技' },
+  { src: '/portfolio/3.webp', title: '创新创业大赛', subtitle: '活土壤 · 2024', tag: '科技' },
+  { src: '/portfolio/4.webp', title: '区块链', subtitle: 'Gateio · 2023', tag: 'Web3' },
+  { src: '/portfolio/5.webp', title: '图像识别', subtitle: 'TensorFlow · 2023', tag: '科技' },
+  { src: '/portfolio/6.webp', title: '图像识别', subtitle: 'OpenCV · 2024', tag: '科技' },
 ];
 
 export default function GallerySection({ isReady = false }: GallerySectionProps) {
@@ -57,7 +55,7 @@ export default function GallerySection({ isReady = false }: GallerySectionProps)
   const pad = (n: number) => String(n).padStart(2, '0');
 
   return (
-    <section className="relative min-h-screen flex flex-col overflow-hidden pt-16 md:pt-20">
+    <section className="relative min-h-[100svh] flex flex-col overflow-hidden pt-16 md:pt-20">
       <div className="flex flex-1 min-h-0">
         {/* Desktop: left sidebar strip */}
         <motion.div
@@ -98,7 +96,7 @@ export default function GallerySection({ isReady = false }: GallerySectionProps)
               {/* Top info */}
               <div>
                 <div className="text-[10px] uppercase tracking-[0.3em] text-white/30 font-mono mb-6">
-                  ▼ / BURIAL0268
+                  ▼ / Hny0305Lin
                 </div>
 
                 <AnimatePresence mode="wait">
@@ -160,7 +158,7 @@ export default function GallerySection({ isReady = false }: GallerySectionProps)
               {/* Bottom: oversized number */}
               <div>
                 <div className="text-[10px] uppercase tracking-widest text-white/20 font-mono mb-1">
-                  BURIAL0268
+                  HNY0305LIN
                 </div>
                 <div className="text-[10px] uppercase tracking-[0.2em] text-white/15 font-bold mb-2">
                   PHOTOGRAPHY
@@ -184,7 +182,7 @@ export default function GallerySection({ isReady = false }: GallerySectionProps)
             <div className="flex-1 relative min-h-0 flex flex-col">
               {/* Image container */}
               <motion.div
-                className="flex-1 relative overflow-hidden bg-[#111]"
+                className="relative overflow-hidden bg-[#111] h-[55svh] min-h-[280px] md:h-[60svh] lg:h-auto lg:flex-1 lg:min-h-[420px]"
                 initial={{ opacity: 0 }}
                 animate={isReady ? { opacity: 1 } : { opacity: 0 }}
                 transition={t(0.15)}
@@ -195,7 +193,7 @@ export default function GallerySection({ isReady = false }: GallerySectionProps)
                   const isBefore = i < index;
                   // 如果是当前图片，x=0。如果在左边，x=-100(或-40)。如果在右边，x=100(或40)。
                   const xPos = isActive ? 0 : isBefore ? -40 : 40;
-                  
+
                   return (
                     <motion.img
                       key={photo.src}
@@ -208,11 +206,11 @@ export default function GallerySection({ isReady = false }: GallerySectionProps)
                         scale: isActive ? 1 : 1.02, // 细微缩放效果
                         zIndex: isActive ? 10 : 0,
                         // 当图片变的不活跃时，禁用指针事件，防止误触
-                        pointerEvents: isActive ? 'auto' : 'none', 
+                        pointerEvents: isActive ? 'auto' : 'none',
                       }}
                       transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
                       draggable={false}
-                      loading="eager" 
+                      loading="eager"
                     />
                   );
                 })}
@@ -313,7 +311,7 @@ export default function GallerySection({ isReady = false }: GallerySectionProps)
             transition={t(0.6)}
           >
             <p className="text-[10px] text-white/30 font-mono uppercase tracking-wider">
-              &copy; {(new Date().getFullYear())} BURIAL0268 <span className="text-white/15">&middot;</span> Built with
+              &copy; {(new Date().getFullYear())} 林孟嘉 <span className="text-white/15">&middot;</span> Built with
               Astro
             </p>
             <div className="flex items-center gap-3 text-[10px] text-white/20 font-mono">
@@ -323,7 +321,7 @@ export default function GallerySection({ isReady = false }: GallerySectionProps)
                 rel="noopener noreferrer"
                 className="hover:text-[#6CE5E8] text-display transition-colors duration-300"
               >
-                粤ICP备2022073442号-1
+                域名备案 - 闽ICP备2026003001号-1
               </a>
               <a
                 href="https://beian.mps.gov.cn/#/query/webSearch?code=44162302000035"
@@ -331,7 +329,7 @@ export default function GallerySection({ isReady = false }: GallerySectionProps)
                 rel="noopener noreferrer"
                 className="hover:text-[#6CE5E8] text-display transition-colors duration-300"
               >
-                粤公网安备44162302000035号
+                公安网监 - 闽公网安备35010302000932号
               </a>
             </div>
           </motion.div>

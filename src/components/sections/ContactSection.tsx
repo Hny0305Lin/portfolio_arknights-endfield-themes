@@ -14,9 +14,8 @@ export default function ContactSection({ isReady = false }: ContactSectionProps)
       : { duration: 0.3, delay: 0 };
 
   const socialLinks = [
-    { icon: Github, label: 'GitHub', url: 'https://github.com/Burial0268' },
-    { icon: Mail, label: 'Email', url: 'mailto:burial0268@163.com' },
-    { icon: Twitter, label: 'Twitter', url: 'https://x.com/gbcl_bzsr' },
+    { icon: Github, label: 'GitHub', url: 'https://github.com/Hny0305Lin' },
+    { icon: Mail, label: 'Email', url: 'mailto:lmj-mc@outlook.com' },
   ];
 
   return (
@@ -24,7 +23,7 @@ export default function ContactSection({ isReady = false }: ContactSectionProps)
       sidebarLabel="联系"
       sidebarVerticalText="CONTACT"
       isDark={true}
-      tagLine="▼ / BURIAL0268"
+      tagLine="▼ / HNY0305LIN"
       badgeText="CONTACT"
       heading="联系我"
       metaLine="// SUPER::PORTFOLIO::CONTACT::GET()"
@@ -66,11 +65,11 @@ export default function ContactSection({ isReady = false }: ContactSectionProps)
             <div className="space-y-5">
               <div>
                 <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-1">邮箱</p>
-                <p className="text-[#F0F0F0] text-sm">burial0268@163.com</p>
+                <p className="text-[#F0F0F0] text-sm">lmj-mc@outlook.com</p>
               </div>
               <div>
                 <p className="text-[10px] uppercase tracking-widest text-gray-500 mb-1">位置</p>
-                <p className="text-[#F0F0F0] text-sm">中国</p>
+                <p className="text-[#F0F0F0] text-sm">中国 福建 福州 台江区</p>
               </div>
             </div>
           </div>
@@ -126,7 +125,7 @@ export default function ContactSection({ isReady = false }: ContactSectionProps)
         transition={t(0.65)}
       >
         <p className="text-black font-bold text-xs uppercase tracking-wider">
-          &copy; 2025 BURIAL0268
+          &copy; 2025 HNY0305LIN
         </p>
         <p className="text-black/50 text-[10px] uppercase tracking-wider">
           Built with React & Astro

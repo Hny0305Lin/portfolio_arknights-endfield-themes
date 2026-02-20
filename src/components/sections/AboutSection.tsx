@@ -30,16 +30,60 @@ export default function AboutSection({ isReady = false }: AboutSectionProps) {
       : { duration: 0.3, delay: 0 };
 
   const stats = [
-    { value: 5, label: '年经验', suffix: '+' },
-    { value: 50, label: '项目完成', suffix: '+' },
-    { value: 20, label: '技术栈', suffix: '+' },
+    { value: 10, label: '年开发经验', suffix: '+' },
+    { value: 50, label: '份项目完成', suffix: '+' },
+    { value: 10, label: '份解决方案', suffix: '+' },
+    { value: Infinity, label: '技术栈', suffix: '' },
     { value: 99, label: '满意度', suffix: '%' },
   ];
 
   const techStack = [
-    'React', 'TypeScript', 'Next.js', 'Astro', 'Vue',
-    'Tailwind CSS', 'Motion', 'Node.js','WebGL', 
-    'Git', 'Vite', 'Rust', 'Tauri', 'PHP'
+    'C#',
+    'C',
+    'C++',
+    'Java',
+    'MySQL',
+    'PHP',
+    'Rust',
+    'Node',
+    'Golang',
+    'Next.js',
+    'React',
+    'MQTT',
+    'SQL',
+    'Git',
+    'GitHub',
+    'NestJS',
+    'Vue',
+    'Lua',
+    'HTML5',
+    'TypeScript',
+    'XML',
+    'Markdown',
+    'Astro',
+    'Nginx',
+    'Embedded',
+    'Rocky',
+    'Android',
+    'HarmonyOS',
+    'NearLink',
+    'HomeAssistant',
+    'Hexo',
+    'Gitee',
+    'GitHub',
+    'Git',
+    'LCEDA',
+    'Photoshop',
+    'Filmora',
+    'Douyin',
+    'OpenCV',
+    'PaddlePaddle',
+    'TensorFlow',
+    'HuggingFace',
+    'Blockchain',
+    'IPFS',
+    'BitCoin',
+    'Web3',
   ];
 
   return (
@@ -47,7 +91,7 @@ export default function AboutSection({ isReady = false }: AboutSectionProps) {
       sidebarLabel="关于"
       sidebarVerticalText="ABOUT"
       isDark={false}
-      tagLine="▼ / BURIAL0268"
+      tagLine="▼ / HNY0305LIN"
       badgeText="ABOUT"
       heading="关于我"
       metaLine="// SUPER::PORTFOLIO::ABOUT::GET()"
@@ -63,19 +107,55 @@ export default function AboutSection({ isReady = false }: AboutSectionProps) {
           transition={t(0.3)}
         >
           <p className="text-xl md:text-2xl lg:text-3xl font-bold text-[#0A0A0A] leading-snug mb-6">
-            我是一名热爱技术的全栈开发工程师，专注于打造极致的用户体验。擅长使用现代 Web 技术栈构建高性能、富交互的应用程序。
+            🌏 居住于中国，福建福州。
           </p>
           <p className="text-base text-gray-500 leading-relaxed mb-8">
-            对动效设计和 3D 可视化有浓厚兴趣，致力于将创意转化为令人惊叹的数字体验。相信优秀的设计与技术实现应该完美结合。
+            🤗 我是一个Java语言和Android软件应用开发的程序员。
           </p>
+          <p className="text-base text-gray-500 leading-relaxed mb-8">
+            🔭 我正在研究物联网应用专业、人工智能、嵌入式创新等内容。
+          </p>
+          <p className="text-base text-gray-500 leading-relaxed mb-8">
+            🌊 我始终坚信比起涉足传统行业，互联网更像是海阔天空。
+          </p>
+          <p className="text-base text-gray-500 leading-relaxed mb-8">
+            🌱 现在我开创了一家软件开发公司，名称叫: 芯异构（福州）信息科技有限公司。
+          </p>
+          <a
+            href="https://www.haohanyh.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-sm font-bold text-[#6CE5E8] hover:text-[#0A0A0A] transition-colors duration-300 mb-8"
+          >
+            访问芯异构官网 →
+          </a> <a
+            href="https://aiqicha.baidu.com/company_detail_63223161956329"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 text-sm font-bold text-[#6CE5E8] hover:text-[#0A0A0A] transition-colors duration-300 mb-8"
+          >
+            在互联网上查看我公司 →
+          </a>
 
           {/* Specialty labels */}
           <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm font-bold text-[#0A0A0A] uppercase tracking-wider">
+            <span>计算机运维</span>
+            <span className="text-[#6CE5E8]">·</span>
             <span>前端开发</span>
             <span className="text-[#6CE5E8]">·</span>
-            <span>动效设计</span>
+            <span>安卓应用</span>
             <span className="text-[#6CE5E8]">·</span>
-            <span>后端开发</span>
+            <span>数据库</span>
+            <span className="text-[#6CE5E8]">·</span>
+            <span>嵌入式</span>
+            <span className="text-[#6CE5E8]">·</span>
+            <span>图像处理</span>
+            <span className="text-[#6CE5E8]">·</span>
+            <span>物联网</span>
+            <span className="text-[#6CE5E8]">·</span>
+            <span>区块链</span>
+            <span className="text-[#6CE5E8]">·</span>
+            <span>人工智能</span>
           </div>
         </motion.div>
 

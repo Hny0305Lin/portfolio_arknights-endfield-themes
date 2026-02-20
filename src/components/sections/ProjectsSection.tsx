@@ -51,9 +51,9 @@ export default function ProjectsSection({ projects, isReady = false }: ProjectsS
       sidebarLabel="作品"
       sidebarVerticalText="WORKS"
       isDark={true}
-      tagLine="▼ / BURIAL0268"
+      tagLine="▼ / HNY0305LIN"
       badgeText="PROJECTS"
-      heading="精选项目"
+      heading="所有项目"
       metaLine="// SUPER::PORTFOLIO::WORKS::GET()"
       isReady={isReady}
     >
@@ -175,13 +175,22 @@ export default function ProjectsSection({ projects, isReady = false }: ProjectsS
           </span>
         </div>
 
-        <a
-          href="https://github.com/Burial0268"
-          className="text-xs uppercase tracking-widest text-[#6CE5E8] font-bold hover:text-white transition-colors duration-300"
-        >
-          VIEW GITHUB → <br />
-          // 查看我的 GitHub
-        </a>
+        <div className="flex flex-col items-end gap-3 text-right">
+          <a
+            href="https://github.com/Hny0305Lin"
+            className="text-xs uppercase tracking-widest text-[#6CE5E8] font-bold hover:text-white transition-colors duration-300"
+          >
+            VIEW GITHUB → <br />
+            // 查看我的 GitHub
+          </a>
+          <a
+            href="https://gitee.com/su-muyao"
+            className="text-xs uppercase tracking-widest text-[#6CE5E8] font-bold hover:text-white transition-colors duration-300"
+          >
+            VIEW GITEE → <br />
+            // 查看我的 Gitee
+          </a>
+        </div>
       </motion.div>
     </SectionShell>
   );

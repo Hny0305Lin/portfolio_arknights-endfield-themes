@@ -15,6 +15,7 @@ const sections = [
   { id: 'home', en: 'INDEX', zh: '首页' },
   { id: 'about', en: 'ABOUT', zh: '关于' },
   { id: 'projects', en: 'WORKS', zh: '项目' },
+  { id: 'awards', en: 'AWARDS', zh: '获奖' },
   { id: 'skills', en: 'SKILLS', zh: '技能' },
   { id: 'gallery', en: 'GALLERY', zh: '影集' }
 ];
@@ -42,13 +43,12 @@ export default function Navigation({ currentSection = 'home', onNavigate, bgmPla
     <>
       {/* Desktop Navigation */}
       <nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          mounted
-            ? isDark
-              ? 'bg-black/40 backdrop-blur-md'
-              : 'bg-white/80 backdrop-blur-md shadow-sm'
-            : 'bg-transparent'
-        }`}
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${mounted
+          ? isDark
+            ? 'bg-black/40 backdrop-blur-md'
+            : 'bg-white/80 backdrop-blur-md shadow-sm'
+          : 'bg-transparent'
+          }`}
       >
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 md:h-20">
@@ -58,9 +58,9 @@ export default function Navigation({ currentSection = 'home', onNavigate, bgmPla
               onClick={() => handleNavClick('home')}
             >
               <span className={`transition-colors duration-500 ${isDark ? 'text-white' : 'text-[#0A0A0A]'}`}>
-                BAESORY
+                林孟嘉
               </span>
-              <span className="text-[#6CE5E8]">拜瑞</span>
+              <span className="text-[#6CE5E8]">Hny0305Lin</span>
             </div>
 
             {/* Desktop Menu */}
@@ -69,13 +69,12 @@ export default function Navigation({ currentSection = 'home', onNavigate, bgmPla
                 <button
                   key={section.id}
                   onClick={() => handleNavClick(section.id)}
-                  className={`relative px-4 py-2 text-xs font-medium tracking-widest transition-colors duration-300 ${
-                    currentSection === section.id
-                      ? isDark ? 'text-white' : 'text-[#0A0A0A]'
-                      : isDark
-                        ? 'text-white/50 hover:text-white/80'
-                        : 'text-gray-400 hover:text-[#0A0A0A]'
-                  }`}
+                  className={`relative px-4 py-2 text-xs font-medium tracking-widest transition-colors duration-300 ${currentSection === section.id
+                    ? isDark ? 'text-white' : 'text-[#0A0A0A]'
+                    : isDark
+                      ? 'text-white/50 hover:text-white/80'
+                      : 'text-gray-400 hover:text-[#0A0A0A]'
+                    }`}
                 >
                   <span className="block">{section.en}</span>
                   <span className="block text-[10px] tracking-normal opacity-50">{section.zh}</span>
@@ -93,9 +92,8 @@ export default function Navigation({ currentSection = 'home', onNavigate, bgmPla
             {/* BGM Toggle */}
             <button
               onClick={onBGMToggle}
-              className={`p-2 rounded-sm transition-colors ${
-                isDark ? 'text-white hover:bg-white/10' : 'text-[#0A0A0A] hover:bg-black/5'
-              }`}
+              className={`p-2 rounded-sm transition-colors ${isDark ? 'text-white hover:bg-white/10' : 'text-[#0A0A0A] hover:bg-black/5'
+                }`}
               aria-label={bgmPlaying ? 'Pause music' : 'Play music'}
             >
               <FFTVisualizer analyser={bgmAnalyser?.current ?? null} playing={!!bgmPlaying} />
@@ -103,9 +101,8 @@ export default function Navigation({ currentSection = 'home', onNavigate, bgmPla
 
             {/* Mobile Menu Button */}
             <button
-              className={`md:hidden p-2 rounded-sm transition-colors ${
-                isDark ? 'text-white hover:bg-white/10' : 'text-[#0A0A0A] hover:bg-black/5'
-              }`}
+              className={`md:hidden p-2 rounded-sm transition-colors ${isDark ? 'text-white hover:bg-white/10' : 'text-[#0A0A0A] hover:bg-black/5'
+                }`}
               onClick={() => setIsOpen(!isOpen)}
               aria-label="Toggle menu"
             >
@@ -131,11 +128,10 @@ export default function Navigation({ currentSection = 'home', onNavigate, bgmPla
                   <motion.button
                     key={section.id}
                     onClick={() => handleNavClick(section.id)}
-                    className={`text-left py-4 text-sm font-medium tracking-widest transition-colors border-b border-gray-100 ${
-                      currentSection === section.id
-                        ? 'text-[#0A0A0A] border-l-2 border-l-[#6CE5E8] pl-4'
-                        : 'text-gray-400 hover:text-[#0A0A0A] pl-4'
-                    }`}
+                    className={`text-left py-4 text-sm font-medium tracking-widest transition-colors border-b border-gray-100 ${currentSection === section.id
+                      ? 'text-[#0A0A0A] border-l-2 border-l-[#6CE5E8] pl-4'
+                      : 'text-gray-400 hover:text-[#0A0A0A] pl-4'
+                      }`}
                     initial={{ x: 40, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     exit={{ x: 40, opacity: 0 }}
